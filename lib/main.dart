@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:location/location.dart';
+import 'package:connectivity/connectivity.dart';
+import 'dart:developer';
 
 import 'error_screen.dart';
 import 'container.dart';
 import 'details.dart';
+import 'nonetscreen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   int day = DateTime.now().weekday - 1;
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false, home: Scaffold(body: HomePage(day))));
@@ -53,6 +57,21 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         darkMode = false;
       });
+    }
+  }
+
+  bool connected = false;
+  checkNet() async {
+    var res = await (Connectivity().checkConnectivity());
+    if (res == ConnectivityResult.mobile) {
+      log("Connected to Mobile Network");
+      connected = true;
+    } else if (res == ConnectivityResult.wifi) {
+      log("Connected to WiFi");
+      connected = true;
+    } else {
+      log("Unable to connect. Please Check Internet Connection");
+      connected = false;
     }
   }
 
@@ -123,96 +142,127 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    checkNet();
+    log(connected.toString());
     checkPermission();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: darkMode ? ThemeData.dark() : ThemeData.light(),
-      home: FutureBuilder(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              floatingActionButton: refreshButton(),
-              body: SafeArea(
-                child: isPortrait
-                    ? Stack(
-                        children: [
-                          cityName(),
-                          changeModeIcon(),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 60),
-                            child: Details(details, index),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                height: 150,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
+    return connected
+        ? MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: darkMode ? ThemeData.dark() : ThemeData.light(),
+            home: FutureBuilder(
+              future: getData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Scaffold(
+                    floatingActionButton: refreshButton(),
+                    body: SafeArea(
+                      child: isPortrait
+                          ? Stack(
+                              children: [
+                                cityName(),
+                                changeModeIcon(),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 60),
+                                  child: Details(details, index),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    container(widget.day, 0,
-                                        () => updateShower(widget.day, 0)),
-                                    container(widget.day + 1, 1,
-                                        () => updateShower(widget.day + 1, 1)),
-                                    container(widget.day + 2, 2,
-                                        () => updateShower(widget.day + 2, 2)),
-                                    container(widget.day + 3, 3,
-                                        () => updateShower(widget.day + 3, 3)),
-                                    container(widget.day + 4, 4,
-                                        () => updateShower(widget.day + 4, 4)),
+                                    Container(
+                                      height: 150,
+                                      child: ListView(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          container(
+                                              widget.day,
+                                              0,
+                                              () =>
+                                                  updateShower(widget.day, 0)),
+                                          container(
+                                              widget.day + 1,
+                                              1,
+                                              () => updateShower(
+                                                  widget.day + 1, 1)),
+                                          container(
+                                              widget.day + 2,
+                                              2,
+                                              () => updateShower(
+                                                  widget.day + 2, 2)),
+                                          container(
+                                              widget.day + 3,
+                                              3,
+                                              () => updateShower(
+                                                  widget.day + 3, 3)),
+                                          container(
+                                              widget.day + 4,
+                                              4,
+                                              () => updateShower(
+                                                  widget.day + 4, 4)),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : ListView(
-                        children: [
-                          cityName(),
-                          changeModeIcon(),
-                          Details(details, index),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 150,
-                            child: ListView(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
+                              ],
+                            )
+                          : ListView(
                               children: [
-                                container(widget.day, 0,
-                                    () => updateShower(widget.day, 0)),
-                                container(widget.day + 1, 1,
-                                    () => updateShower(widget.day + 1, 1)),
-                                container(widget.day + 2, 2,
-                                    () => updateShower(widget.day + 2, 2)),
-                                container(widget.day + 3, 3,
-                                    () => updateShower(widget.day + 3, 3)),
-                                container(widget.day + 4, 4,
-                                    () => updateShower(widget.day + 4, 4)),
+                                cityName(),
+                                changeModeIcon(),
+                                Details(details, index),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  height: 150,
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      container(widget.day, 0,
+                                          () => updateShower(widget.day, 0)),
+                                      container(
+                                          widget.day + 1,
+                                          1,
+                                          () =>
+                                              updateShower(widget.day + 1, 1)),
+                                      container(
+                                          widget.day + 2,
+                                          2,
+                                          () =>
+                                              updateShower(widget.day + 2, 2)),
+                                      container(
+                                          widget.day + 3,
+                                          3,
+                                          () =>
+                                              updateShower(widget.day + 3, 3)),
+                                      container(
+                                          widget.day + 4,
+                                          4,
+                                          () =>
+                                              updateShower(widget.day + 4, 4)),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
-                          )
-                        ],
-                      ),
-              ),
-            );
-          } else {
-            return ErrorScreen(() => getData());
-          }
-        },
-      ),
-    );
+                    ),
+                  );
+                } else {
+                  return ErrorScreen(() => getData());
+                }
+              },
+            ),
+          )
+        : NoNetScreen();
   }
 
   cityName() {
