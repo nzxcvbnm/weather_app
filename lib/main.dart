@@ -12,36 +12,16 @@ import 'nonetscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  int day = DateTime.now().weekday - 1;
+  int numOfCurrentWeekday = DateTime.now().weekday - 1;
+
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: false, home: Scaffold(body: HomePage(day))));
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(body: HomePage(numOfCurrentWeekday))));
 }
 
-List<String> min = List();
-List<String> max = List();
-List<String> temp = List();
-List<String> humidity = List();
-List<String> pressure = List();
-List<String> wind = List();
-List<String> abbr = List();
-List<String> weekday = [
-  'Mon',
-  'Tue',
-  'Wed',
-  'Thu',
-  'Fri',
-  'Sat',
-  'Sun',
-  'Mon',
-  'Tue',
-  'Wed',
-  'Thu',
-  'Fri',
-];
-
 class HomePage extends StatefulWidget {
-  int day;
-  HomePage(this.day);
+  final int numOfCurrentWeekday;
+  HomePage(this.numOfCurrentWeekday);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -60,18 +40,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  bool connected = false;
+  bool internetConnected = false;
   checkNet() async {
     var res = await (Connectivity().checkConnectivity());
     if (res == ConnectivityResult.mobile) {
       log("Connected to Mobile Network");
-      connected = true;
+      internetConnected = true;
     } else if (res == ConnectivityResult.wifi) {
       log("Connected to WiFi");
-      connected = true;
+      internetConnected = true;
     } else {
       log("Unable to connect. Please Check Internet Connection");
-      connected = false;
+      internetConnected = false;
     }
   }
 
@@ -127,7 +107,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    details = widget.day;
+    details = widget.numOfCurrentWeekday;
     index = 0;
     super.initState();
   }
@@ -143,11 +123,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     checkNet();
-    log(connected.toString());
+    log(internetConnected.toString());
     checkPermission();
-    return connected
+    return internetConnected
         ? MaterialApp(
-            debugShowCheckedModeBanner: false,
             theme: darkMode ? ThemeData.dark() : ThemeData.light(),
             home: FutureBuilder(
               future: getData(),
@@ -182,30 +161,39 @@ class _HomePageState extends State<HomePage> {
                                         scrollDirection: Axis.horizontal,
                                         children: [
                                           container(
-                                              widget.day,
+                                              widget.numOfCurrentWeekday,
                                               0,
-                                              () =>
-                                                  updateShower(widget.day, 0)),
+                                              () => updateShower(
+                                                  widget.numOfCurrentWeekday,
+                                                  0)),
                                           container(
-                                              widget.day + 1,
+                                              widget.numOfCurrentWeekday + 1,
                                               1,
                                               () => updateShower(
-                                                  widget.day + 1, 1)),
+                                                  widget.numOfCurrentWeekday +
+                                                      1,
+                                                  1)),
                                           container(
-                                              widget.day + 2,
+                                              widget.numOfCurrentWeekday + 2,
                                               2,
                                               () => updateShower(
-                                                  widget.day + 2, 2)),
+                                                  widget.numOfCurrentWeekday +
+                                                      2,
+                                                  2)),
                                           container(
-                                              widget.day + 3,
+                                              widget.numOfCurrentWeekday + 3,
                                               3,
                                               () => updateShower(
-                                                  widget.day + 3, 3)),
+                                                  widget.numOfCurrentWeekday +
+                                                      3,
+                                                  3)),
                                           container(
-                                              widget.day + 4,
+                                              widget.numOfCurrentWeekday + 4,
                                               4,
                                               () => updateShower(
-                                                  widget.day + 4, 4)),
+                                                  widget.numOfCurrentWeekday +
+                                                      4,
+                                                  4)),
                                         ],
                                       ),
                                     ),
@@ -227,28 +215,35 @@ class _HomePageState extends State<HomePage> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     children: [
-                                      container(widget.day, 0,
-                                          () => updateShower(widget.day, 0)),
                                       container(
-                                          widget.day + 1,
+                                          widget.numOfCurrentWeekday,
+                                          0,
+                                          () => updateShower(
+                                              widget.numOfCurrentWeekday, 0)),
+                                      container(
+                                          widget.numOfCurrentWeekday + 1,
                                           1,
-                                          () =>
-                                              updateShower(widget.day + 1, 1)),
+                                          () => updateShower(
+                                              widget.numOfCurrentWeekday + 1,
+                                              1)),
                                       container(
-                                          widget.day + 2,
+                                          widget.numOfCurrentWeekday + 2,
                                           2,
-                                          () =>
-                                              updateShower(widget.day + 2, 2)),
+                                          () => updateShower(
+                                              widget.numOfCurrentWeekday + 2,
+                                              2)),
                                       container(
-                                          widget.day + 3,
+                                          widget.numOfCurrentWeekday + 3,
                                           3,
-                                          () =>
-                                              updateShower(widget.day + 3, 3)),
+                                          () => updateShower(
+                                              widget.numOfCurrentWeekday + 3,
+                                              3)),
                                       container(
-                                          widget.day + 4,
+                                          widget.numOfCurrentWeekday + 4,
                                           4,
-                                          () =>
-                                              updateShower(widget.day + 4, 4)),
+                                          () => updateShower(
+                                              widget.numOfCurrentWeekday + 4,
+                                              4)),
                                     ],
                                   ),
                                 )
@@ -309,3 +304,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+List<String> min = List();
+List<String> max = List();
+List<String> temp = List();
+List<String> humidity = List();
+List<String> pressure = List();
+List<String> wind = List();
+List<String> abbr = List();
+List<String> weekday = [
+  'Mon',
+  'Tue',
+  'Wed',
+  'Thu',
+  'Fri',
+  'Sat',
+  'Sun',
+  'Mon',
+  'Tue',
+  'Wed',
+  'Thu',
+  'Fri',
+];
