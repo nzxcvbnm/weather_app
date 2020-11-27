@@ -127,6 +127,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  List<Widget> listOfContainers = List();
+
+  createListOfContainers() {
+    if (listOfContainers.length >= 5) return;
+    for (int i = 0; i < 5; i++) {
+      listOfContainers.add(container(widget.numOfCurrentWeekday + i, i,
+          () => updateShower(widget.numOfCurrentWeekday + i, i)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     checkNet();
@@ -146,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
+                  createListOfContainers();
                   return Scaffold(
                     floatingActionButton: refreshButton(),
                     body: SafeArea(
@@ -164,45 +175,9 @@ class _HomePageState extends State<HomePage> {
                                     Container(
                                       height: 150,
                                       child: ListView(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                                          container(
-                                              widget.numOfCurrentWeekday,
-                                              0,
-                                              () => updateShower(
-                                                  widget.numOfCurrentWeekday,
-                                                  0)),
-                                          container(
-                                              widget.numOfCurrentWeekday + 1,
-                                              1,
-                                              () => updateShower(
-                                                  widget.numOfCurrentWeekday +
-                                                      1,
-                                                  1)),
-                                          container(
-                                              widget.numOfCurrentWeekday + 2,
-                                              2,
-                                              () => updateShower(
-                                                  widget.numOfCurrentWeekday +
-                                                      2,
-                                                  2)),
-                                          container(
-                                              widget.numOfCurrentWeekday + 3,
-                                              3,
-                                              () => updateShower(
-                                                  widget.numOfCurrentWeekday +
-                                                      3,
-                                                  3)),
-                                          container(
-                                              widget.numOfCurrentWeekday + 4,
-                                              4,
-                                              () => updateShower(
-                                                  widget.numOfCurrentWeekday +
-                                                      4,
-                                                  4)),
-                                        ],
-                                      ),
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          children: listOfContainers),
                                     ),
                                   ],
                                 ),
@@ -219,40 +194,9 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   height: 150,
                                   child: ListView(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      container(
-                                          widget.numOfCurrentWeekday,
-                                          0,
-                                          () => updateShower(
-                                              widget.numOfCurrentWeekday, 0)),
-                                      container(
-                                          widget.numOfCurrentWeekday + 1,
-                                          1,
-                                          () => updateShower(
-                                              widget.numOfCurrentWeekday + 1,
-                                              1)),
-                                      container(
-                                          widget.numOfCurrentWeekday + 2,
-                                          2,
-                                          () => updateShower(
-                                              widget.numOfCurrentWeekday + 2,
-                                              2)),
-                                      container(
-                                          widget.numOfCurrentWeekday + 3,
-                                          3,
-                                          () => updateShower(
-                                              widget.numOfCurrentWeekday + 3,
-                                              3)),
-                                      container(
-                                          widget.numOfCurrentWeekday + 4,
-                                          4,
-                                          () => updateShower(
-                                              widget.numOfCurrentWeekday + 4,
-                                              4)),
-                                    ],
-                                  ),
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      children: listOfContainers),
                                 )
                               ],
                             ),
