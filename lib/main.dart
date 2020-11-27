@@ -41,18 +41,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool internetConnected = false;
+
   checkNet() async {
-    var res = await (Connectivity().checkConnectivity());
-    if (res == ConnectivityResult.mobile) {
-      log("Connected to Mobile Network");
-      internetConnected = true;
-    } else if (res == ConnectivityResult.wifi) {
-      log("Connected to WiFi");
-      internetConnected = true;
-    } else {
-      log("Unable to connect. Please Check Internet Connection");
-      internetConnected = false;
+    if (!internetConnected) {
+      var res = await (Connectivity().checkConnectivity());
+      if (res == ConnectivityResult.mobile) {
+        setInternetConnected();
+      } else if (res == ConnectivityResult.wifi) {
+        log("Connected to WiFi");
+        setInternetConnected();
+      } else {
+        log("Unable to connect. Please Check Internet Connection");
+      }
     }
+  }
+
+  setInternetConnected() {
+    log("Connected to WiFi");
+    setState(() {
+      internetConnected = true;
+    });
   }
 
   Location location = Location();
@@ -121,9 +129,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     checkNet();
-    log(internetConnected.toString());
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     checkPermission();
     return internetConnected
         ? MaterialApp(
