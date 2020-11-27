@@ -149,58 +149,14 @@ class _HomePageState extends State<HomePage> {
               future: getData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
+                  return progressIndicator();
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
                   createListOfContainers();
                   return Scaffold(
                     floatingActionButton: refreshButton(),
                     body: SafeArea(
-                      child: isPortrait
-                          ? Stack(
-                              children: [
-                                cityName(),
-                                changeModeIcon(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 60),
-                                  child: Details(details, index),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      height: 150,
-                                      child: ListView(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          children: listOfContainers),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : ListView(
-                              children: [
-                                cityName(),
-                                changeModeIcon(),
-                                Details(details, index),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  height: 150,
-                                  child: ListView(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      children: listOfContainers),
-                                )
-                              ],
-                            ),
-                    ),
+                        child: isPortrait ? verticalView() : horizontalView()),
                   );
                 } else {
                   return ErrorScreen(() => getData());
@@ -209,6 +165,59 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         : NoNetScreen();
+  }
+
+  progressIndicator() {
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  verticalView() {
+    return Stack(
+      children: [
+        cityName(),
+        changeModeIcon(),
+        Padding(
+          padding: const EdgeInsets.only(top: 60),
+          child: Details(details, index),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              height: 150,
+              child: ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: listOfContainers),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  horizontalView() {
+    return ListView(
+      children: [
+        cityName(),
+        changeModeIcon(),
+        Details(details, index),
+        SizedBox(
+          height: 20,
+        ),
+        Container(
+          height: 150,
+          child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: listOfContainers),
+        )
+      ],
+    );
   }
 
   cityName() {
