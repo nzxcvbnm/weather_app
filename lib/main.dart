@@ -76,14 +76,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   LocationData _locationData;
+
   Future getData() async {
     _locationData = await location.getLocation();
     String long = _locationData.longitude.toString();
     String lat = _locationData.latitude.toString();
-    String url = 'https://www.metaweather.com/api/location/search/?lattlong=' +
-        lat +
-        ',' +
-        long;
+    String url =
+        'https://www.metaweather.com/api/location/search/?lattlong=$lat,$long';
     var res = await http.get(url);
     var list = jsonDecode(res.body.toString());
 
@@ -91,7 +90,7 @@ class _HomePageState extends State<HomePage> {
     city = 'weather for ' + map['title'];
     woeid = map['woeid'].toString();
 
-    String url2 = 'https://www.metaweather.com/api/location/' + woeid;
+    String url2 = 'https://www.metaweather.com/api/location/$woeid';
     var res2 = await http.get(url2);
     Map<String, dynamic> map2 = jsonDecode(res2.body.toString());
     var list2 = map2['consolidated_weather'];
