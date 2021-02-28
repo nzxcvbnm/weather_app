@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+import '../main.dart';
 
 class NoNetScreen extends StatelessWidget {
   @override
@@ -10,7 +10,6 @@ class NoNetScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('no internet connection'),
-            Text('connect and tap:'),
             IconButton(
               icon: Icon(
                 Icons.autorenew_outlined,

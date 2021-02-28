@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'main.dart';
+import 'home_page.dart';
 
 container(int day, int i, Function onTap) {
   return GestureDetector(
